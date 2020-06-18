@@ -10,7 +10,8 @@ import de.hfu.residents.domain.Resident;
 import de.hfu.residents.repository.ResidentRepository;
 import de.hfu.residents.repository.ResidentRepositoryStub;
 
-public class BaseResidentServiceIntTestWStub {
+// name has to End or start with Test for mvn to execute it
+public class BaseResidentServiceIntWStubTest {
 	private ResidentRepository residentRepo = new ResidentRepositoryStub();
 	private BaseResidentService service = new BaseResidentService();
 	
@@ -68,6 +69,30 @@ public class BaseResidentServiceIntTestWStub {
 		service.getUniqueResident(r);
 	}
 	
+	@Test(expected=ResidentServiceException.class, timeout=1000)
+	public void testWildcardNotAllowedInName() throws ResidentServiceException {
+		service.setResidentRepository(residentRepo);  // DI with stub element
+		Resident r = new Resident();
+		r.setGivenName("G*");
+		service.getUniqueResident(r);
+	}
+	
+	@Test(expected=ResidentServiceException.class, timeout=1000)
+	public void testWildcardNotAllowedInStreet() throws ResidentServiceException {
+		service.setResidentRepository(residentRepo);  // DI with stub element
+		Resident r = new Resident();
+		r.setStreet("*str");
+		service.getUniqueResident(r);
+	}
+	
+	@Test(expected=ResidentServiceException.class, timeout=1000)
+	public void testWildcardNotAllowedInFamilyName() throws ResidentServiceException {
+		service.setResidentRepository(residentRepo);  // DI with stub element
+		Resident r = new Resident();
+		r.setFamilyName("A*");
+		service.getUniqueResident(r);
+	}
+	
 	@Test
 	public void testContainsGeorgFrisch() throws ResidentServiceException {
 		service.setResidentRepository(residentRepo);  // DI with stub element
@@ -77,6 +102,18 @@ public class BaseResidentServiceIntTestWStub {
 		r.setGivenName("Georg");
 		r.setFamilyName("Frisch");
 		r.setDateOfBirth(c.getTime());
+		Resident rr = new Resident();
+		rr = service.getUniqueResident(r);
+		assertNotEquals(rr, null);
+	}
+	
+	@Test
+	public void testContainsZimmermannAsFamilyName() throws ResidentServiceException {
+		service.setResidentRepository(residentRepo);  // DI with stub element
+		Calendar c = Calendar.getInstance(); 
+		c.set(1969, 11, 1, 0, 0);
+		Resident r = new Resident();
+		r.setFamilyName("Zimmermann");
 		Resident rr = new Resident();
 		rr = service.getUniqueResident(r);
 		assertNotEquals(rr, null);
