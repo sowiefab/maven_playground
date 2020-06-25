@@ -3,7 +3,6 @@ package de.hfu.residents.service;
 import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.assertThat; 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,8 +40,7 @@ public class BaseResidentServiceIntWMockTest {
 		
 		BaseResidentService service = new BaseResidentService();
 		service.setResidentRepository(repoMock);
-		List<Resident> lr = service.getFilteredResidentsList(r);
-		assertEquals(lr.size(), 0);
+		assertThat("wrong day", service.getFilteredResidentsList(r).size(), equalTo(0));
 	}
 
 }
